@@ -13,7 +13,7 @@ const ProductCard = ({ product }: Props) => {
       <div className="product-card_img-container">
         <Image
           src={product.image}
-          alt={product.title}
+          alt={product.title + "Product Title"}
           width={200}
           height={200}
           className="product-card_img"
@@ -30,7 +30,7 @@ const ProductCard = ({ product }: Props) => {
 
           <p className="text-black text-lg font-semibold">
             <span>{product?.currency}</span>
-            <span>{product?.currentPrice}</span>
+            <span>{product?.currentPrice.value}</span>
           </p>
         </div>
       </div>

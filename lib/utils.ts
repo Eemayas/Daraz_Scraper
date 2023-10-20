@@ -35,7 +35,7 @@
 //   return "";
 // }
 
-import { PriceHistoryItem, Product } from "@/types";
+import { Price, PriceHistoryItem, Product } from "@/types";
 
 const Notification = {
   WELCOME: "WELCOME",
@@ -101,7 +101,7 @@ export function getHighestPrice(priceList: PriceHistoryItem[]) {
   let highestPrice = priceList[0];
 
   for (let i = 0; i < priceList.length; i++) {
-    if (priceList[i].price > highestPrice.price) {
+    if (priceList[i].price.value > highestPrice.price.value) {
       highestPrice = priceList[i];
     }
   }
@@ -113,7 +113,7 @@ export function getLowestPrice(priceList: PriceHistoryItem[]) {
   let lowestPrice = priceList[0];
 
   for (let i = 0; i < priceList.length; i++) {
-    if (priceList[i].price < lowestPrice.price) {
+    if (priceList[i].price.value < lowestPrice.price.value) {
       lowestPrice = priceList[i];
     }
   }
@@ -121,11 +121,17 @@ export function getLowestPrice(priceList: PriceHistoryItem[]) {
   return lowestPrice.price;
 }
 
-export function getAveragePrice(priceList: PriceHistoryItem[]) {
-  const sumOfPrices = priceList.reduce((acc, curr) => acc + curr.price, 0);
+export function getAveragePrice(priceList: PriceHistoryItem[]): Price {
+  const sumOfPrices = priceList.reduce(
+    (acc: number, curr) => acc + curr.price.value,
+    0
+  );
   const averagePrice = sumOfPrices / priceList.length || 0;
-
-  return averagePrice;
+  const averages: Price = {
+    text: `Rs ${averagePrice}`,
+    value: averagePrice,
+  };
+  return averages;
 }
 
 export const getEmailNotifType = (
@@ -140,7 +146,9 @@ export const getEmailNotifType = (
   if (!scrapedProduct.isOutOfStock && currentProduct.isOutOfStock) {
     return Notification.CHANGE_OF_STOCK as keyof typeof Notification;
   }
-  if (scrapedProduct.discountRate >= THRESHOLD_PERCENTAGE) {
+  if (
+    Number(scrapedProduct.discountRate.replace("%", "")) >= THRESHOLD_PERCENTAGE
+  ) {
     return Notification.THRESHOLD_MET as keyof typeof Notification;
   }
 

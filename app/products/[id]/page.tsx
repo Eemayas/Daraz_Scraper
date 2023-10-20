@@ -16,6 +16,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
   if (!product) redirect("/");
 
   const similarProducts = await getSimilarProducts(id);
+  console.log(similarProducts);
   return (
     <div className="product-container">
       <div className="flex gap-28 xl:flex-row flex-col">
@@ -79,10 +80,10 @@ const ProductDetails = async ({ params: { id } }: Props) => {
             <div className="product-info">
               <div className="flex flex-col gap-2">
                 <p className="text-[34px] text-secondary font-bold">
-                  {product.currency} {formatNumber(product.currentPrice)}
+                  {product.currency} {formatNumber(product.currentPrice.value)}
                 </p>
                 <p className="text-[21px] text-black opacity-50 line-through">
-                  {product.currency} {formatNumber(product.originalPrice)}
+                  {product.currency} {formatNumber(product.originalPrice.value)}
                 </p>
               </div>
 
@@ -126,28 +127,28 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                   title="Current Price"
                   iconSrc="/assets/icons/price-tag.svg"
                   value={`${product.currency} ${formatNumber(
-                    product.currentPrice
+                    product.currentPrice.value
                   )}`}
                 />
                 <PriceInfoCard
                   title="Average Price"
                   iconSrc="/assets/icons/chart.svg"
                   value={`${product.currency} ${formatNumber(
-                    product.averagePrice
+                    product.averagePrice.value
                   )}`}
                 />
                 <PriceInfoCard
                   title="Highest Price"
                   iconSrc="/assets/icons/arrow-up.svg"
                   value={`${product.currency} ${formatNumber(
-                    product.highestPrice
+                    product.highestPrice.value
                   )}`}
                 />
                 <PriceInfoCard
                   title="Lowest Price"
                   iconSrc="/assets/icons/arrow-down.svg"
                   value={`${product.currency} ${formatNumber(
-                    product.lowestPrice
+                    product.lowestPrice.value
                   )}`}
                 />
               </div>
@@ -163,7 +164,12 @@ const ProductDetails = async ({ params: { id } }: Props) => {
           </h3>
 
           <div className="flex flex-col gap-4">
-            {product?.description?.split("\n")}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: product?.description?.split("\n"),
+              }}
+            />
+            {/* {product?.description?.split("\n")} */}
           </div>
         </div>
 

@@ -1,5 +1,5 @@
 export type PriceHistoryItem = {
-  price: number;
+  price: Price;
 };
 
 export type User = {
@@ -12,18 +12,26 @@ export type Product = {
   currency: string;
   image: string;
   title: string;
-  currentPrice: number;
-  originalPrice: number;
+  category: string[];
+  currentPrice: Price;
+  originalPrice: Price;
   priceHistory: PriceHistoryItem[] | [];
-  highestPrice: number;
-  lowestPrice: number;
-  averagePrice: number;
-  discountRate: number;
+  discountRate: string;
   description: string;
-  category: string;
   reviewsCount: number;
+  rateCount: number;
+  reviewScores: number[];
+  productQuantityValue: number;
   stars: number;
   isOutOfStock: Boolean;
+  productBrand: { type: String };
+  sellerShopName: { type: String };
+  sellerShopURL: { type: String };
+  positiveSellerRating: { type: String };
+  default: [];
+  lowestPrice: Price;
+  highestPrice: Price;
+  averagePrice: Price;
   users?: User[];
 };
 
@@ -41,4 +49,9 @@ export type EmailContent = {
 export type EmailProductInfo = {
   title: string;
   url: string;
+};
+
+export type Price = {
+  text: string;
+  value: number;
 };

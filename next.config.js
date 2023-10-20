@@ -6,6 +6,7 @@ const nextConfig = {
   },
   images: {
     domains: ["static-01.daraz.com"],
+    domains: ["static-01.daraz.com.np"],
     // domains: ["m.media-amazon.com"],
   },
 };

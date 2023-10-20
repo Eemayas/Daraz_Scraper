@@ -1,7 +1,10 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { extractCurrency, extractDescription, extractPrice } from "../utils";
-export async function scrapeDarazProduct(url: string) {
+import { Product } from "@/types";
+export async function scrapeDarazProduct(
+  url: string
+): Promise<Product | undefined> {
   if (!url) return;
 
   const username = String(process.env.BRIGHT_DATA_USERNAME);
@@ -19,103 +22,113 @@ export async function scrapeDarazProduct(url: string) {
   };
 
   try {
-    axios
-      .get(url, options)
-      .then((response) => {
-        const $ = cheerio.load(response.data);
+    let data: Product | undefined = undefined;
+    const response = await axios.get(url, options);
+    const $ = cheerio.load(response.data);
+    let match;
+    $("script").each((_index, element) => {
+      const scriptContent = $(element).html();
+      const pattern = /define\('app\/pc', \[.*?\], function\(app\) {(.*?)}\)/s;
 
-        $("script").each((index, element) => {
-          const scriptContent = $(element).html();
-          const pattern =
-            /define\('app\/pc', \[.*?\], function\(app\) {(.*?)}\)/s;
-          const match = scriptContent?.match(pattern);
-          if (match) {
-            const scriptContent = match[1];
-            //   console.log(
-            //     "Script content inside define function:",
-            //     scriptContent
-            //   );
-            const tryBlockMatches = scriptContent.substring(34) + "}";
-            let jsonObject = JSON.parse(tryBlockMatches);
+      const matchs = scriptContent?.match(pattern);
+      if (matchs) {
+        match = matchs;
+        const scriptContent = match[1];
+        const tryBlockMatches = scriptContent.substring(34) + "}";
+        // to find any filed uncomment below code and go json formattor
+        // console.log(tryBlockMatches);
+        let jsonObject = JSON.parse(tryBlockMatches);
+        jsonObject = jsonObject["data"]["root"]["fields"];
 
-            jsonObject = jsonObject["data"]["root"]["fields"];
-            // console.log(tryBlockMatches.toString());
-            const sellerShopName = jsonObject["seller"]["name"];
-            const sellerShopURL = jsonObject["seller"]["url"];
-            const positiveSellerRating = jsonObject["seller"]["percentRate"];
+        //Detail about seller
+        const sellerShopName = jsonObject["seller"]["name"];
+        const sellerShopURL = jsonObject["seller"]["url"];
+        const positiveSellerRating = jsonObject["seller"]["percentRate"];
 
-            const productRating = jsonObject["review"]["ratings"]["average"];
-            const reviewCount = jsonObject["review"]["ratings"]["reviewCount"];
-            const rateCount = jsonObject["review"]["ratings"]["rateCount"];
-            const reviewScores = jsonObject["review"]["ratings"]["scores"];
+        //Details about product rating
+        const productRating = jsonObject["review"]["ratings"]["average"];
+        const reviewCount = jsonObject["review"]["ratings"]["reviewCount"];
+        const rateCount = jsonObject["review"]["ratings"]["rateCount"];
+        const reviewScores = jsonObject["review"]["ratings"]["scores"];
 
-            const productTag = jsonObject["tag"];
-            const productPhotos = jsonObject["skuGalleries"];
+        //Detail about the prodct Brand
+        const productBrand = jsonObject["product"]["brand"]["name"];
 
-            const productBrand = jsonObject["product"]["brand"]["name"];
-            const productDescription = jsonObject["product"]["desc"];
-            const productURL = jsonObject["product"]["link"];
-            const productTitle = jsonObject["product"]["title"];
+        //Detail baout product
+        const productTitle = jsonObject["product"]["title"];
+        const productDescription = jsonObject["product"]["desc"];
+        // const productPhotos = jsonObject["skuGalleries"]["0"];
+        const productTag = jsonObject["tag"];
+        const productURL = jsonObject["product"]["link"];
+        const productCategories =
+          jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_category"];
+        const productImage =
+          // jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_photo"];
+          jsonObject["skuInfos"]["0"]["image"];
+        // const productDiscount1 =
+        //   jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_discount"] ?? "0%";
 
-            const productCategories =
-              jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_category"];
-            const productDiscount1 =
-              jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_discount"] ?? "0%";
-            const productImage =
-              jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_photo"];
-            const productOriginalPrice1 =
-              jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_price"];
-            const currencyCode =
-              jsonObject["skuInfos"]["0"]["dataLayer"]["core"]["currencyCode"];
+        // const productOriginalPrice1 =
+        //   jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_price"];
 
-            const productDiscount =
-              jsonObject["skuInfos"]["0"]["price"]["discount"];
+        //Detail about product price
+        const currencyCode =
+          jsonObject["skuInfos"]["0"]["dataLayer"]["core"]["currencyCode"];
+        const productDiscount =
+          jsonObject["skuInfos"]["0"]["price"]["discount"];
+        // "originalPrice": {
+        //   "text": "Rs. 89",
+        //   "value": 89
+        // },
+        const productOriginalPrice =
+          jsonObject["skuInfos"]["0"]["price"]["originalPrice"];
+        const productSalePrice =
+          jsonObject["skuInfos"]["0"]["price"]["salePrice"];
 
-            // "originalPrice": {
-            //   "text": "Rs. 89",
-            //   "value": 89
-            // },
-            const productOriginalPrice =
-              jsonObject["skuInfos"]["0"]["price"]["originalPrice"];
-            const productSalePrice =
-              jsonObject["skuInfos"]["0"]["price"]["salePrice"];
-            const productQuantityValue =
-              jsonObject["skuInfos"]["0"]["quantity"]["limit"]["max"];
-            console.log({
-              sellerShopName,
-              sellerShopURL,
-              positiveSellerRating,
-            });
-            console.log({
-              productRating,
-              rateCount,
-              reviewCount,
-              reviewScores,
-            });
-            console.log({
-              productTag,
-              productPhotos,
-              productBrand,
-              productDescription,
-              productURL,
-              productTitle,
-              productCategories,
-              productDiscount1,
-              productImage,
-              productOriginalPrice1,
-              productDiscount,
-              productOriginalPrice,
-              productSalePrice,
-              productQuantityValue,
-              currencyCode,
-            });
-          }
-        });
-      })
+        //Detail abouth availability of product stock
+        const productQuantityValue =
+          jsonObject["skuInfos"]["0"]["quantity"]["limit"]["max"];
+        const outOfStock = productQuantityValue == 0 ? true : false;
 
-      .catch((error) => {
-        console.log(error);
-      });
+        data = {
+          default: [],
+          url,
+          currency: currencyCode == "NPR" ? "Rs" : currencyCode || "RS",
+          image: productImage,
+          title: productTitle,
+          category: productCategories,
+          // productPhotos,
+          // productTag,
+
+          currentPrice: productSalePrice || productOriginalPrice,
+          originalPrice: productOriginalPrice || productSalePrice,
+          priceHistory: [],
+          discountRate: productDiscount,
+
+          description: productDescription,
+
+          reviewsCount: reviewCount,
+          rateCount,
+          reviewScores,
+          productQuantityValue,
+          stars: productRating,
+
+          isOutOfStock: outOfStock,
+
+          productBrand,
+
+          sellerShopName,
+          sellerShopURL,
+          positiveSellerRating,
+          lowestPrice: productSalePrice || productOriginalPrice,
+          highestPrice: productOriginalPrice || productSalePrice,
+          averagePrice: productSalePrice || productOriginalPrice,
+        };
+        // return data;
+      }
+    });
+
+    return data;
   } catch (error: any) {
     throw new Error(`Failed to scrape Daraz Product: ${error.message}`);
   }

@@ -6,24 +6,57 @@ const productSchema = new mongoose.Schema(
     currency: { type: String, required: true },
     image: { type: String, required: true },
     title: { type: String, required: true },
-    currentPrice: { type: Number, required: true },
-    originalPrice: { type: Number, required: true },
+    category: [{ type: String }],
+
+    currentPrice: {
+      text: { type: String, required: true },
+      value: { type: Number, required: true },
+    },
+    originalPrice: {
+      text: { type: String, required: true },
+      value: { type: Number, required: true },
+    },
     priceHistory: [
       {
-        price: { type: Number, required: true },
+        price: {
+          text: { type: String, required: true },
+          value: { type: Number, required: true },
+        },
         date: { type: Date, default: Date.now },
       },
     ],
-    lowestPrice: { type: Number },
-    highestPrice: { type: Number },
-    averagePrice: { type: Number },
-    discountRate: { type: Number },
+    discountRate: { type: String },
     description: { type: String },
-    category: { type: String },
+
     reviewsCount: { type: Number },
+    rateCount: { type: Number },
+    reviewScores: [{ type: Number }],
+    productQuantityValue: { type: Number },
+    stars: { type: Number },
+
     isOutOfStock: { type: Boolean, default: false },
+
+    productBrand: { type: String },
+
+    sellerShopName: { type: String },
+    sellerShopURL: { type: String },
+    positiveSellerRating: { type: String },
+
     users: [{ email: { type: String, required: true } }],
     default: [],
+
+    lowestPrice: {
+      text: { type: String, required: true },
+      value: { type: Number, required: true },
+    },
+    highestPrice: {
+      text: { type: String, required: true },
+      value: { type: Number, required: true },
+    },
+    averagePrice: {
+      text: { type: String, required: true },
+      value: { type: Number, required: true },
+    },
   },
   { timestamps: true }
 );

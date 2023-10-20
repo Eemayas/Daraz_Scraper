@@ -26,12 +26,12 @@ const Searchbar = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // const isValidLink = isValidDarazProductURL(searchPrompt);
-    // // alert(isValidLink ? "Valid Link" : "Invalid Link");
+    const isValidLink = isValidDarazProductURL(searchPrompt);
+    // alert(isValidLink ? "Valid Link" : "Invalid Link");
 
-    // if (!isValidLink) {
-    //   return alert("Plaease Provide a Valid Daraz Product URL");
-    // }
+    if (!isValidLink) {
+      return alert("Plaease Provide a Valid Daraz Product URL");
+    }
 
     try {
       setIsLoading(true);
