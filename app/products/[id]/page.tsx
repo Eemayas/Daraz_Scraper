@@ -7,6 +7,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 import Modal from "@/components/Modal";
+import { Carter_One } from "next/font/google";
 interface Props {
   params: { id: string };
 }
@@ -35,6 +36,9 @@ const ProductDetails = async ({ params: { id } }: Props) => {
               <p className="text-[28px] text-secondary font-semibold">
                 {product.title}
               </p>
+              <p className="text-black opacity-50 text-lg capitalize">
+                {product.category.map((C: string) => C + ",")}
+              </p>
               <Link
                 href={product.url}
                 target="_blank"
@@ -54,7 +58,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                 />
 
                 <p className="text-base font-semibold text-[#D46F77]">
-                  {product.reviewsCount}
+                  {product.rateCount}
                 </p>
               </div>
 
@@ -85,6 +89,9 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                 <p className="text-[21px] text-black opacity-50 line-through">
                   {product.currency} {formatNumber(product.originalPrice.value)}
                 </p>
+                <p className="text-[15px] text-black opacity-50">
+                  {`(${product.discountRate})`}{" "}
+                </p>
               </div>
 
               <div className="flex flex-col gap-4">
@@ -97,7 +104,7 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                       height={16}
                     />
                     <p className="text-sm text-primary-orange font-semibold">
-                      {product.stars || "25"}
+                      {product.stars || "4"}
                     </p>
                   </div>
 
@@ -117,6 +124,12 @@ const ProductDetails = async ({ params: { id } }: Props) => {
                 <p className="text-sm text-black opacity-50">
                   <span className="text-primary-green font-semibold">93% </span>{" "}
                   of buyers have recommeded this.
+                </p>
+                <p className="text-sm text-black opacity-50">
+                  <span className="text-primary-green font-semibold">
+                    {product.productQuantityValue}
+                  </span>{" "}
+                  are remaining in the stocks.
                 </p>
               </div>
             </div>
@@ -181,8 +194,45 @@ const ProductDetails = async ({ params: { id } }: Props) => {
             height={22}
           />
 
-          <Link href="/" className="text-base text-white">
+          <Link href={product.url} target="_" className="text-base text-white">
             Buy Now
+          </Link>
+        </button>
+      </div>
+      <div className="flex flex-col gap-16">
+        <div className="flex flex-col gap-5">
+          <h3 className="text-2xl text-secondary font-semibold">
+            Seller Details
+          </h3>
+
+          <div className="flex flex-col gap-4">
+            <span>
+              <span className="font-bold">Name:</span>
+              {product.sellerShopName}
+            </span>{" "}
+            <span>
+              <span className="font-bold">Positive Seller Rating:</span>
+
+              {product.positiveSellerRating}
+            </span>
+            {/* {product?.description?.split("\n")} */}
+          </div>
+        </div>
+
+        <button className="btn w-fit mx-auto flex items-center justify-center gap-3 min-w-[200px]">
+          <Image
+            src="/assets/icons/bag.svg"
+            alt="check"
+            width={22}
+            height={22}
+          />
+
+          <Link
+            href={product.sellerShopURL}
+            target="_"
+            className="text-base text-white"
+          >
+            Visit Shop
           </Link>
         </button>
       </div>
