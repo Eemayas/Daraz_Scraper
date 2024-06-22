@@ -39,7 +39,7 @@ export async function scrapeDarazProduct(
         // console.log(tryBlockMatches);
         let jsonObject = JSON.parse(tryBlockMatches);
         jsonObject = jsonObject["data"]["root"]["fields"];
-        // console.log(JSON.stringify(jsonObject));
+        console.log(JSON.stringify(jsonObject));
 
         //Detail about seller
         const sellerShopName = jsonObject["seller"]["name"];
@@ -56,9 +56,9 @@ export async function scrapeDarazProduct(
         const productBrand = jsonObject["product"]["brand"]["name"];
 
         //Detail about product
-        const productTitle =
-          jsonObject["product"]["title"] + jsonObject["product"]["desc"];
-        const productDescription = jsonObject["product"]["highlights"];
+        const productTitle = jsonObject["product"]["title"];
+        const productDescription =
+          jsonObject["product"]["highlights"] + jsonObject["product"]["desc"];
         // const productPhotos = jsonObject["skuGalleries"]["0"];
         const productTag = jsonObject["tag"];
         const productURL = jsonObject["product"]["link"];
