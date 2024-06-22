@@ -37,9 +37,9 @@ export async function scrapeDarazProduct(
         const tryBlockMatches = scriptContent.substring(34) + "}";
         // to find any filed uncomment below code and go json formattor
         // console.log(tryBlockMatches);
-        // let jsonObject = JSON.parse(tryBlockMatches);
+        let jsonObject = JSON.parse(tryBlockMatches);
         jsonObject = jsonObject["data"]["root"]["fields"];
-        console.log(JSON.stringify(jsonObject));
+        // console.log(JSON.stringify(jsonObject));
 
         //Detail about seller
         const sellerShopName = jsonObject["seller"]["name"];
