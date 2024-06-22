@@ -1,10 +1,12 @@
 "use client";
 import { scrapeAndStoreProduct } from "@/lib/action";
+import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 
 const Searchbar = () => {
   const [searchPrompt, setSetsearchPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const isValidDarazProductURL = (url: string) => {
     try {
@@ -30,12 +32,13 @@ const Searchbar = () => {
     // alert(isValidLink ? "Valid Link" : "Invalid Link");
 
     if (!isValidLink) {
-      return alert("Plaease Provide a Valid Daraz Product URL");
+      return alert("Please Provide a Valid Daraz Product URL");
     }
 
     try {
       setIsLoading(true);
-      const product = await scrapeAndStoreProduct(searchPrompt);
+      const productId = await scrapeAndStoreProduct(searchPrompt);
+      router.push(`/products/${productId}`);
     } catch (error) {
       console.log(error);
     } finally {

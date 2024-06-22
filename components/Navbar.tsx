@@ -20,7 +20,7 @@ const Navbar = () => {
             height={27}
           ></Image>
           <p className="nav-logo">
-            Price<span className="text-primary">Wise</span>
+            Daraz<span className="text-primary">Scrapper</span>
           </p>
         </Link>
         <div className=" flex items-center gap-5">

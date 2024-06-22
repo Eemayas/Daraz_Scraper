@@ -10,7 +10,6 @@ import { generateEmailBody, sendEmail } from "../nodemailer";
 
 export async function scrapeAndStoreProduct(productUrl: string) {
   if (!productUrl) return;
-
   try {
     connectToDB();
 
@@ -42,8 +41,8 @@ export async function scrapeAndStoreProduct(productUrl: string) {
       product,
       { upsert: true, new: true }
     );
-    console.log(newProduct._id);
     revalidatePath(`/products/${newProduct._id}`);
+    return newProduct._id;
   } catch (error: any) {
     throw new Error(`Failed to Create/update product: ${error.message}`);
   }

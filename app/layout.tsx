@@ -10,7 +10,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "DarazScan",
+  title: "DarazScapper",
   description: "Track product prices",
 };
 
