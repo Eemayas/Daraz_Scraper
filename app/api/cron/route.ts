@@ -16,6 +16,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET(request: Request) {
+  console.log("CORN JOB STARTED");
   try {
     connectToDB();
 

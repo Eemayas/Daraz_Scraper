@@ -37,7 +37,7 @@ export async function scrapeDarazProduct(
         const tryBlockMatches = scriptContent.substring(34) + "}";
         // to find any filed uncomment below code and go json formattor
         // console.log(tryBlockMatches);
-        let jsonObject = JSON.parse(tryBlockMatches);
+        // let jsonObject = JSON.parse(tryBlockMatches);
         jsonObject = jsonObject["data"]["root"]["fields"];
         console.log(JSON.stringify(jsonObject));
 
@@ -65,11 +65,6 @@ export async function scrapeDarazProduct(
         const productCategories =
           jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_category"];
         const productImage = jsonObject["skuInfos"]["0"]["image"];
-        // const productDiscount1 =
-        //   jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_discount"] ?? "0%";
-
-        // const productOriginalPrice1 =
-        //   jsonObject["skuInfos"]["0"]["dataLayer"]["pdt_price"];
 
         //Detail about product price
         const currencyCode =
