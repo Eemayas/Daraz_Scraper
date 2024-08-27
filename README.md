@@ -10,6 +10,7 @@ A Next.js application to scrape product details from the popular e-commerce site
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Website](#website)
 - [Contributing](#contributing)
 - [Authors and Acknowledgments](#authors-and-acknowledgments)
 - [License](#license)
@@ -87,6 +88,10 @@ Before installing, make sure you have the following:
    ```
 
 2. The app will automatically track the price and notify you of any significant changes.
+
+## Website
+
+You can view the live demo of DarazScrapper at [https://daraz-scraper.vercel.app/](https://daraz-scraper.vercel.app/).
 
 ## Demo
 
